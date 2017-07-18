@@ -6,7 +6,7 @@ CycleGAN: [[Project]](https://junyanz.github.io/CycleGAN/) [[Paper]](https://arx
 
 ## Introduction
 
-This code contains two versions of the network architectures and hyper-parameters. The first one is based on [here](https://github.com/hardikbansal/CycleGAN). The second one is based on the PyTorch version based on [here](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix). The differences are minor and we observed both versions produced good results. You may need to train several times as the quality of the results are sensitive to the initialization.  
+This code contains two versions of the network architectures and hyper-parameters. The first one is based on tge [TensorFlow Implementationn](https://github.com/hardikbansal/CycleGAN). The second one is based on the [official PyTorch version](https://github.com/junyanz/pytorch-CycleGAN-and-pix2pix). The differences are minor and we observed both versions produced good results. You may need to train several times as the quality of the results are sensitive to the initialization.  
 
 Below is a snapshot of our result at the 50th epoch on one training instance:
 
