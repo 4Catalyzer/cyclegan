@@ -17,7 +17,7 @@ Below is a snapshot of our result at the 50th epoch on one training instance:
 * You can either download one of the defaults CycleGAN datasets or use your own dataset. 
 	* Download a CycleGAN dataset (e.g. horse2zebra):
 	```bash
-	bash ./download_cyclegan_dataset.sh horse2zebra
+	bash ./download_dataset.sh horse2zebra
 	```
 	* Use your own dataset: put images from each domain at folder_a and folder_b respectively. 
 
