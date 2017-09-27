@@ -21,7 +21,7 @@ ngf = 32
 ndf = 64
 
 
-def get_outputs(inputs, network="tensorflow"):
+def get_outputs(inputs, network="tensorflow", skip=False):
     images_a = inputs['images_a']
     images_b = inputs['images_b']
 
@@ -44,16 +44,16 @@ def get_outputs(inputs, network="tensorflow"):
         prob_real_a_is_real = current_discriminator(images_a, "d_A")
         prob_real_b_is_real = current_discriminator(images_b, "d_B")
 
-        fake_images_b = current_generator(images_a, name="g_A")
-        fake_images_a = current_generator(images_b, name="g_B")
+        fake_images_b = current_generator(images_a, name="g_A", skip=skip)
+        fake_images_a = current_generator(images_b, name="g_B", skip=skip)
 
         scope.reuse_variables()
 
         prob_fake_a_is_real = current_discriminator(fake_images_a, "d_A")
         prob_fake_b_is_real = current_discriminator(fake_images_b, "d_B")
 
-        cycle_images_a = current_generator(fake_images_b, "g_B")
-        cycle_images_b = current_generator(fake_images_a, "g_A")
+        cycle_images_a = current_generator(fake_images_b, "g_B", skip=skip)
+        cycle_images_b = current_generator(fake_images_a, "g_A", skip=skip)
 
         scope.reuse_variables()
 
@@ -96,7 +96,7 @@ def build_resnet_block(inputres, dim, name="resnet", padding="REFLECT"):
         return tf.nn.relu(out_res + inputres)
 
 
-def build_generator_resnet_9blocks_tf(inputgen, name="generator"):
+def build_generator_resnet_9blocks_tf(inputgen, name="generator", skip=False):
     with tf.variable_scope(name):
         f = 7
         ks = 3
@@ -131,12 +131,15 @@ def build_generator_resnet_9blocks_tf(inputgen, name="generator"):
                                      0.02, "SAME", "c6",
                                      do_norm=False, do_relu=False)
 
-        out_gen = tf.nn.tanh(o_c6, "t1")
+        if skip is True:
+            out_gen = tf.nn.tanh(inputgen + o_c6, "t1")
+        else:
+            out_gen = tf.nn.tanh(o_c6, "t1")
 
         return out_gen
 
 
-def build_generator_resnet_9blocks(inputgen, name="generator"):
+def build_generator_resnet_9blocks(inputgen, name="generator", skip=False):
     with tf.variable_scope(name):
         f = 7
         ks = 3
@@ -171,7 +174,10 @@ def build_generator_resnet_9blocks(inputgen, name="generator"):
                                      0.02, "SAME", "c6",
                                      do_norm=False, do_relu=False)
 
-        out_gen = tf.nn.tanh(o_c6, "t1")
+        if skip is True:
+            out_gen = tf.nn.tanh(inputgen + o_c6, "t1")
+        else:
+            out_gen = tf.nn.tanh(o_c6, "t1")
 
         return out_gen
 
