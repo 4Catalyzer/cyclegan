@@ -1,5 +1,9 @@
 # CycleGAN in TensorFlow
 
+**[update 9/26/2017]** We observed faster convergence and better performance after adding skip connection between input and output in the generator. To turn the feature on, use switch --skip=True. This is the result of turning on skip after training for 23 epochs:
+
+<img src='imgs/skip_result.jpg' width="900px"/>
+
 This is the TensorFlow implementation for CycleGAN. The code was written by [Harry Yang](https://www.harryyang.org) and [Nathan Silberman](https://github.com/nathansilberman).
 
 CycleGAN: [[Project]](https://junyanz.github.io/CycleGAN/) [[Paper]](https://arxiv.org/pdf/1703.10593.pdf) 
