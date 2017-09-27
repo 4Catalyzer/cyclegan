@@ -21,7 +21,7 @@ class CycleGAN:
     def __init__(self, pool_size, lambda_a,
                  lambda_b, output_root_dir, to_restore,
                  base_lr, max_step, network_version,
-                 dataset_name, checkpoint_dir, do_flipping):
+                 dataset_name, checkpoint_dir, do_flipping, skip):
         current_time = datetime.now().strftime("%Y%m%d-%H%M%S")
 
         self._pool_size = pool_size
@@ -38,6 +38,7 @@ class CycleGAN:
         self._dataset_name = dataset_name
         self._checkpoint_dir = checkpoint_dir
         self._do_flipping = do_flipping
+        self._skip = skip
 
         self.fake_images_A = np.zeros(
             (self._pool_size, 1, model.IMG_HEIGHT, model.IMG_WIDTH,
@@ -103,7 +104,8 @@ class CycleGAN:
             'fake_pool_b': self.fake_pool_B,
         }
 
-        outputs = model.get_outputs(inputs, self._network_version)
+        outputs = model.get_outputs(
+            inputs, network=self._network_version, skip=self._skip)
 
         self.prob_real_a_is_real = outputs['prob_real_a_is_real']
         self.prob_real_b_is_real = outputs['prob_real_b_is_real']
@@ -416,7 +418,11 @@ class CycleGAN:
               type=click.STRING,
               default='',
               help='The name of the train/test split.')
-def main(to_train, log_dir, config_filename, checkpoint_dir):
+@click.option('--skip',
+              type=click.BOOL,
+              default=False,
+              help='Whether to add skip connection between input and output.')
+def main(to_train, log_dir, config_filename, checkpoint_dir, skip):
     """
 
     :param to_train: Specify whether it is training or testing. 1: training; 2:
@@ -426,6 +432,8 @@ def main(to_train, log_dir, config_filename, checkpoint_dir):
     :param config_filename: The configuration file.
     :param checkpoint_dir: The directory that saves the latest checkpoint. It
     only takes effect when to_train == 2.
+    :param skip: A boolean indicating whether to add skip connection between
+    input and output.
     """
     if not os.path.isdir(log_dir):
         os.makedirs(log_dir)
@@ -446,7 +454,7 @@ def main(to_train, log_dir, config_filename, checkpoint_dir):
 
     cyclegan_model = CycleGAN(pool_size, lambda_a, lambda_b, log_dir,
                               to_restore, base_lr, max_step, network_version,
-                              dataset_name, checkpoint_dir, do_flipping)
+                              dataset_name, checkpoint_dir, do_flipping, skip)
 
     if to_train > 0:
         cyclegan_model.train()

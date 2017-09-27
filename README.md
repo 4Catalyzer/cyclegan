@@ -17,9 +17,9 @@ Below is a snapshot of our result at the 50th epoch on one training instance:
 * You can either download one of the defaults CycleGAN datasets or use your own dataset. 
 	* Download a CycleGAN dataset (e.g. horse2zebra):
 	```bash
-	bash ./download_cyclegan_dataset.sh horse2zebra
+	bash ./download_datasets.sh horse2zebra
 	```
-	* Using your own dataset: put images from each domain at folder_a and folder_b respectively. 
+	* Use your own dataset: put images from each domain at folder_a and folder_b respectively. 
 
 * Create the csv file as input to the data loader. 
 	* Edit the cyclegan_datasets.py file. For example, if you have a face2ramen_train dataset which contains 800 face images and 1000 ramen images both in PNG format, you can just edit the cyclegan_datasets.py as following:
