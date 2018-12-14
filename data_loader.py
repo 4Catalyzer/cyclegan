@@ -51,35 +51,36 @@ def load_data(dataset_name, image_size_before_crop,
 
     image_i, image_j = _load_samples(
         csv_name, cyclegan_datasets.DATASET_TO_IMAGETYPE[dataset_name])
-    inputs = {
-        'image_i': image_i,
-        'image_j': image_j
-    }
 
     # Preprocessing:
-    inputs['image_i'] = tf.image.resize_images(
-        inputs['image_i'], [image_size_before_crop, image_size_before_crop])
-    inputs['image_j'] = tf.image.resize_images(
-        inputs['image_j'], [image_size_before_crop, image_size_before_crop])
+    image_i = tf.image.resize_images(
+        image_i, [image_size_before_crop, image_size_before_crop])
+    image_j = tf.image.resize_images(
+        image_j, [image_size_before_crop, image_size_before_crop])
 
     if do_flipping is True:
-        inputs['image_i'] = tf.image.random_flip_left_right(inputs['image_i'])
-        inputs['image_j'] = tf.image.random_flip_left_right(inputs['image_j'])
+        image_i = tf.image.random_flip_left_right(image_i)
+        image_j = tf.image.random_flip_left_right(image_j)
 
-    inputs['image_i'] = tf.random_crop(
-        inputs['image_i'], [model.IMG_HEIGHT, model.IMG_WIDTH, 3])
-    inputs['image_j'] = tf.random_crop(
-        inputs['image_j'], [model.IMG_HEIGHT, model.IMG_WIDTH, 3])
+    image_i = tf.random_crop(
+        image_i, [model.IMG_HEIGHT, model.IMG_WIDTH, 3])
+    image_j = tf.random_crop(
+        image_j, [model.IMG_HEIGHT, model.IMG_WIDTH, 3])
 
-    inputs['image_i'] = tf.subtract(tf.div(inputs['image_i'], 127.5), 1)
-    inputs['image_j'] = tf.subtract(tf.div(inputs['image_j'], 127.5), 1)
+    image_i = tf.subtract(tf.div(image_i, 127.5), 1)
+    image_j = tf.subtract(tf.div(image_j, 127.5), 1)
 
     # Batch
     if do_shuffle is True:
-        inputs['images_i'], inputs['images_j'] = tf.train.shuffle_batch(
-            [inputs['image_i'], inputs['image_j']], 1, 5000, 100)
+        images_i, images_j = tf.train.shuffle_batch(
+            [image_i, image_j], 1, 5000, 100)
     else:
-        inputs['images_i'], inputs['images_j'] = tf.train.batch(
-            [inputs['image_i'], inputs['image_j']], 1)
+        images_i, images_j = tf.train.batch(
+            [image_i, image_j], 1)
 
+    inputs = {
+        'images_i': images_i,
+        'images_j': images_j
+    }
+        
     return inputs
